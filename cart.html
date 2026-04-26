@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart | Zento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-soft: #3d3d3d;
+    --ink-muted: #6b6b6b;
+    --cream: #f7f4ef;
+    --cream-deep: #ede9e1;
+    --sage: #4a6741;
+    --sage-light: #6a8f61;
+    --sage-pale: #e8f0e6;
+    --gold: #b8924a;
+    --gold-light: #d4a85c;
+    --white: #ffffff;
+    --border: #ddd9d0;
+    --red: #c0392b;
+    --green: #2d7a3a;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .cart-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .header-logo span { color: var(--sage); }
+  .header-social-proof {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .header-avatars {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    letter-spacing: -4px;
+  }
+  .header-avatars span { display: inline-block; }
+  .header-proof-text {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .header-guarantee {
+    background: var(--sage);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 50px;
+    white-space: nowrap;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .cart-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 120px;
+  }
+
+  .cart-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .cart-subtitle {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+
+  /* ── FREE SHIPPING BAR ── */
+  .shipping-bar-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .shipping-bar-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .shipping-bar-text .highlight { color: var(--sage); }
+  .shipping-bar-track {
+    background: #e5e5e5;
+    border-radius: 50px;
+    height: 7px;
+    overflow: hidden;
+  }
+  .shipping-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, var(--sage), var(--sage-light));
+    transition: width 0.5s ease;
+  }
+  .shipping-unlocked {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  /* ── CART ITEM ── */
+  .cart-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .cart-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .cart-item-img {
+    width: 78px;
+    height: 78px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--sage-pale), #d0e4cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .cart-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .cart-item-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+  .cart-item-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .qty-btn {
+    width: 34px;
+    height: 34px;
+    background: var(--cream);
+    border: none;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .qty-btn:hover { background: var(--cream-deep); }
+  .qty-num {
+    width: 36px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cart-price-block { text-align: right; }
+  .cart-original-price {
+    font-size: 12px;
+    color: #bbb;
+    text-decoration: line-through;
+  }
+  .cart-current-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .cart-save-tag {
+    display: inline-block;
+    background: #edfce8;
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 3px;
+  }
+  .discount-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--sage-pale);
+    border: 1px solid #c0d4bc;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--sage);
+    margin-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── ORDER SUMMARY ── */
+  .summary-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 14px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid #f0ede8;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .label { font-weight: 500; }
+  .summary-row .value { font-weight: 600; color: var(--ink); }
+  .summary-row .value.green { color: var(--green); }
+  .summary-row .value.strike { text-decoration: line-through; color: #bbb; font-weight: 400; }
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    border-top: 2px solid var(--border);
+    margin-top: 8px;
+  }
+  .summary-total .total-amount { font-size: 22px; }
+
+  /* ── TRUST BADGES ── */
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    margin-bottom: 8px;
+  }
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  .trust-badge .icon { font-size: 14px; }
+
+  /* ── PAYMENT ICONS ── */
+  .payment-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .pay-icon {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 26px;
+  }
+  .pay-icon.apple { background: #000; color: white; }
+  .pay-icon.gpay { font-style: italic; }
+  .pay-icon.pp { color: #003087; font-weight: 800; }
+  .pay-icon.shop-pay { background: #5a31f4; color: white; border-radius: 6px; }
+
+  /* ── CHECKOUT BUTTON ── */
+  .checkout-btn {
+    width: 100%;
+    background: var(--sage);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .checkout-btn:hover { background: var(--sage-light); }
+  .checkout-btn:active { transform: scale(0.99); }
+  .checkout-btn .lock { font-size: 15px; }
+  .checkout-btn .price-label { opacity: 0.85; font-size: 14px; font-weight: 500; }
+
+  .back-link {
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    display: block;
+    margin-bottom: 20px;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  /* ── STICKY BOTTOM ── */
+  .sticky-checkout {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .sticky-info { display: flex; flex-direction: column; }
+  .sticky-product { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .sticky-price { font-size: 12px; color: var(--ink-muted); }
+  .sticky-btn {
+    background: var(--sage);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── GUARANTEE STRIP ── */
+  .guarantee-strip {
+    background: var(--sage-pale);
+    border: 1px solid #c8ddc4;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .guarantee-icon { font-size: 28px; flex-shrink: 0; }
+  .guarantee-title { font-size: 13px; font-weight: 700; color: var(--sage); }
+  .guarantee-desc { font-size: 12px; color: var(--ink-muted); line-height: 1.4; margin-top: 1px; }
+
+  /* ── UPSELL ── */
+  .upsell-nudge {
+    background: #fff8ed;
+    border: 1.5px solid #f0d89a;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .upsell-nudge.show { display: block; }
+  .upsell-nudge-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .upsell-nudge-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .upsell-add-btn {
+    margin-top: 8px;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .upsell-add-btn:hover { background: var(--gold-light); }
+
+  @media (max-width: 480px) {
+    .header-social-proof { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="cart-header">
+  <a href="/" class="header-logo">Zento<span>.</span></a>
+  <div class="header-social-proof">
+    <div class="header-avatars">
+      <span>👩</span><span>👨</span><span>👩</span><span>👨</span><span>👩</span>
+    </div>
+    <div class="header-proof-text">14,000+ Happy Cat Owners</div>
+  </div>
+  <div class="header-guarantee">🛡️ 30-Day Guarantee</div>
+</header>
+
+<div class="cart-wrap">
+
+  <div class="cart-title">Your Cart &bull; <span id="item-count">1</span> Item</div>
+  <div class="cart-subtitle">You're almost there — complete your order below.</div>
+
+  <!-- FREE SHIPPING BAR -->
+  <div class="shipping-bar-wrap" id="shipping-bar-wrap">
+    <div class="shipping-unlocked" id="shipping-unlocked" style="display:none;">✅ Free Shipping Unlocked!</div>
+    <div class="shipping-bar-text" id="shipping-bar-text">
+      Add <span class="highlight" id="units-needed">1 more</span> to unlock <span class="highlight">Free Shipping</span>
+    </div>
+    <div class="shipping-bar-track">
+      <div class="shipping-bar-fill" id="shipping-fill" style="width: 50%;"></div>
+    </div>
+  </div>
+
+  <!-- UPSELL NUDGE (shown when qty = 1) -->
+  <div class="upsell-nudge" id="upsell-nudge">
+    <div class="upsell-nudge-text">💡 Most customers with 2 cats buy 2</div>
+    <div class="upsell-nudge-sub">One per litter box area for best results. Add a second and unlock free shipping + Save 30%.</div>
+    <button class="upsell-add-btn" onclick="setQty(2)">Add a Second — Unlock Free Shipping</button>
+  </div>
+
+  <!-- CART ITEM -->
+  <div class="cart-card">
+    <div class="cart-item">
+      <div class="cart-item-img">🐾</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">FreshPaw Pro</div>
+        <div class="cart-item-sub">Litter Box Odor Eliminator</div>
+        <div class="cart-item-price-row">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-num" id="qty-display">1</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <div class="cart-price-block">
+            <div class="cart-original-price" id="original-price">$49.99</div>
+            <div class="cart-current-price" id="current-price">$39.99</div>
+            <div class="cart-save-tag" id="save-tag">Save $10.00</div>
+          </div>
+        </div>
+        <div class="discount-tag" id="discount-tag">🏷️ 1× FRESHPAW — 20% OFF</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary-card">
+    <div class="summary-row">
+      <span class="label">Subtotal</span>
+      <span class="value" id="subtotal-display">$39.99</span>
+    </div>
+    <div class="summary-row">
+      <span class="label">Discount</span>
+      <span class="value green" id="discount-display">− $10.00</span>
+    </div>
+    <div class="summary-row">
+      <span class="label">Shipping</span>
+      <span class="value" id="shipping-display">$4.99</span>
+    </div>
+    <div class="summary-total">
+      <span>Total</span>
+      <span class="total-amount" id="total-display">$44.98</span>
+    </div>
+  </div>
+
+  <!-- GUARANTEE -->
+  <div class="guarantee-strip">
+    <div class="guarantee-icon">🛡️</div>
+    <div>
+      <div class="guarantee-title">30-Day Odor-Free Guarantee</div>
+      <div class="guarantee-desc">If your home doesn't smell different within 30 days, you get every dollar back. No questions asked.</div>
+    </div>
+  </div>
+
+  <!-- TRUST BADGES -->
+  <div class="trust-row">
+    <div class="trust-badge"><span class="icon">🔒</span> Secure Checkout</div>
+    <div class="trust-badge"><span class="icon">✈️</span> Fast Shipping</div>
+    <div class="trust-badge"><span class="icon">🐱</span> Cat Safe</div>
+  </div>
+
+  <!-- PAYMENT ICONS -->
+  <div class="payment-icons">
+    <div class="pay-icon apple">🍎 Pay</div>
+    <div class="pay-icon gpay"><span style="color:#4285F4;font-weight:900;">G</span>Pay</div>
+    <div class="pay-icon pp">PayPal</div>
+    <div class="pay-icon shop-pay">Shop Pay</div>
+    <div class="pay-icon">VISA</div>
+    <div class="pay-icon" style="color:#eb001b;">MC</div>
+    <div class="pay-icon" style="color:#007bc1; font-weight:900;">AMEX</div>
+  </div>
+
+  <!-- CHECKOUT BUTTON -->
+  <button class="checkout-btn" onclick="proceedToCheckout()" id="checkout-btn">
+    <span class="lock">🔒</span>
+    <span>Checkout Now</span>
+    <span class="price-label" id="btn-total">• $44.98</span>
+  </button>
+
+  <a class="back-link" href="/">← Continue Shopping</a>
+
+</div>
+
+<!-- STICKY BOTTOM BAR -->
+<div class="sticky-checkout" id="sticky-checkout">
+  <div class="sticky-info">
+    <div class="sticky-product">FreshPaw Pro ×<span id="sticky-qty">1</span></div>
+    <div class="sticky-price" id="sticky-total">$44.98 · Free shipping on 2+</div>
+  </div>
+  <button class="sticky-btn" onclick="proceedToCheckout()">Checkout →</button>
+</div>
+
+<script>
+  // ── META PIXEL ──
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '895510073507981');
+  fbq('track', 'PageView');
+
+  // ── STRIPE LINKS ──
+  const stripeLinks = {
+    1: 'https://buy.stripe.com/28E9AM5Jt2rB6IT9vRaEE01',
+    2: 'https://buy.stripe.com/28E3codbVfen5EPbDZaEE02',
+    3: 'https://buy.stripe.com/cNibIUdbV9U37MXeQbaEE03',
+    4: 'https://buy.stripe.com/bJe7sE5Jt7LV7MX6jFaEE00'
+  };
+
+  // ── PRICING DATA ──
+  const pricing = {
+    1: { unitPrice: 39.99, originalUnit: 49.99, label: '1× FRESHPAW — 20% OFF', shipping: 4.99 },
+    2: { unitPrice: 34.99, originalUnit: 49.99, label: '2× FRESHPAW — 30% OFF', shipping: 0 },
+    3: { unitPrice: 29.99, originalUnit: 49.99, label: '3× FRESHPAW — 40% OFF', shipping: 0 },
+    4: { unitPrice: 24.99, originalUnit: 49.99, label: '4× FRESHPAW — 50% OFF', shipping: 0 }
+  };
+
+  let qty = 1;
+
+  // Read qty from URL if passed: cart.html?qty=2
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlQty = parseInt(urlParams.get('qty'));
+  if (urlQty && urlQty >= 1 && urlQty <= 4) qty = urlQty;
+
+  function setQty(n) {
+    qty = Math.max(1, Math.min(4, n));
+    updateUI();
+  }
+
+  function changeQty(delta) {
+    setQty(qty + delta);
+  }
+
+  function fmt(n) {
+    return '$' + n.toFixed(2);
+  }
+
+  function updateUI() {
+    const p = pricing[qty] || pricing[4];
+    const subtotal = p.unitPrice * qty;
+    const original = p.originalUnit * qty;
+    const saved = original - subtotal;
+    const total = subtotal + p.shipping;
+
+    // Qty display
+    document.getElementById('qty-display').textContent = qty;
+    document.getElementById('item-count').textContent = qty;
+    document.getElementById('sticky-qty').textContent = qty;
+
+    // Prices
+    document.getElementById('original-price').textContent = fmt(original);
+    document.getElementById('current-price').textContent = fmt(subtotal);
+    document.getElementById('save-tag').textContent = 'Save ' + fmt(saved);
+    document.getElementById('discount-tag').textContent = '🏷️ ' + p.label;
+
+    // Summary
+    document.getElementById('subtotal-display').textContent = fmt(subtotal);
+    document.getElementById('discount-display').textContent = '− ' + fmt(saved);
+    document.getElementById('shipping-display').textContent = p.shipping === 0 ? 'FREE ✓' : fmt(p.shipping);
+    document.getElementById('total-display').textContent = fmt(total);
+    document.getElementById('btn-total').textContent = '• ' + fmt(total);
+    document.getElementById('sticky-total').textContent = fmt(total) + (p.shipping === 0 ? ' · Free Shipping' : ' · Add 1 more for free shipping');
+
+    // Checkout button
+    document.getElementById('checkout-btn').querySelector('span:nth-child(2)').textContent = 'Checkout Now';
+
+    // Shipping bar
+    if (qty >= 2) {
+      document.getElementById('shipping-unlocked').style.display = 'block';
+      document.getElementById('shipping-bar-text').style.display = 'none';
+      document.getElementById('shipping-fill').style.width = '100%';
+    } else {
+      document.getElementById('shipping-unlocked').style.display = 'none';
+      document.getElementById('shipping-bar-text').style.display = 'block';
+      document.getElementById('shipping-fill').style.width = '50%';
+      document.getElementById('units-needed').textContent = '1 more';
+    }
+
+    // Upsell nudge
+    const nudge = document.getElementById('upsell-nudge');
+    nudge.classList.toggle('show', qty === 1);
+  }
+
+  function proceedToCheckout() {
+    fbq('track', 'InitiateCheckout', { value: parseFloat(document.getElementById('total-display').textContent.replace('$','')), currency: 'USD' });
+    const link = stripeLinks[qty] || stripeLinks[4];
+    window.location.href = link;
+  }
+
+  // Sticky bar on scroll
+  window.addEventListener('scroll', () => {
+    const sticky = document.getElementById('sticky-checkout');
+    sticky.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+
+  // Init
+  updateUI();
+</script>
+
+</body>
+</html>
